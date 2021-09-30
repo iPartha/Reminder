@@ -44,13 +44,14 @@ dependencies {
     implementation deps.androidx.recyclerview
     implementation deps.androidx.cardview
     implementation deps.androidx.viewModel
-    implementation deps.coil
     implementation deps.androidx.liveData
     implementation deps.dagger.common
     implementation deps.squareup.converter_gson
-    implementation deps.stetho
+    implementation deps.squareup.logging_interceptor
     implementation deps.material_component
     implementation deps.dagger.common
+    implementation deps.googleplay.map
+    implementation deps.googleplay.location
     kapt deps.dagger.compiler
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

@@ -32,6 +32,7 @@ dependencies {
     api deps.androidx.core_ktx
     api deps.androidx.appcompat
     api deps.squareup.retrofit
+    api deps.googleplay.map
     api deps.jetbrains.coroutines_core
     api deps.jetbrains.coroutines_android
     testImplementation 'junit:junit:4.13'

@@ -11,7 +11,7 @@ buildscript {
                         'code': 1,
                         'name': "0.1"
                 ],
-                'id'        : 'com.simple.mvi'
+                'id'        : 'com.know.reminder'
         ]
         versions = [
                 'gradle'               : '4.0.1',
@@ -25,9 +25,11 @@ buildscript {
                 'lifecycle'            : '2.2.0',
                 'dagger'               : '2.28.3',
                 'retrofit'             : '2.9.0',
-                'stetho'               : '1.5.1',
                 'kotlinx_serialization': '1.0.0-RC',
-                'coil': '0.11.0',
+                'map'                  : '17.0.1',
+                'location'             : '18.0.0',
+                'interceptor'           : '4.2.1',
+
         ]
         deps = [
                 'androidx' : [
@@ -39,6 +41,10 @@ buildscript {
                         viewModel       : "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}",
                         liveData        : "androidx.lifecycle:lifecycle-livedata-ktx:${versions.lifecycle}",
 
+                ],
+                'googleplay' : [
+                        map      : "com.google.android.gms:play-services-maps:${versions.map}",
+                        location: "com.google.android.gms:play-services-location:${versions.location}",
                 ],
                 'jetbrains': [
                         stdlib               : "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}",
@@ -53,9 +59,8 @@ buildscript {
                 'squareup' : [
                         retrofit      : "com.squareup.retrofit2:retrofit:${versions.retrofit}",
                         converter_gson: "com.squareup.retrofit2:converter-gson:${versions.retrofit}",
+                        logging_interceptor: "com.squareup.okhttp3:logging-interceptor:${versions.interceptor}",
                 ],
-                'stetho'   : "com.facebook.stetho:stetho-okhttp3:${versions.stetho}",
-                'coil' :"io.coil-kt:coil:${versions.coil}",
                 'material_component': "com.google.android.material:material:${versions.appcompat}"
         ]
 

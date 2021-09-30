@@ -1,6 +1,15 @@
 <resources>
-    <string name="app_name">MVI-CleanArch</string>
+    <string name="app_name">Reminder</string>
     <string name="error_empty_data">Empty data</string>
     <string name="error_server_error">Server error</string>
     <string name="error_exception">Error loading data</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="location_permission_rationale_msg">Location permission is required for get the origin and destination location,
+        Reminder might not work properly.
+    </string>
+    <string name="location_permission_bg_rationale_msg">Background access permission is required for scan the location while app in background,
+        Reminder might not work properly.
+    </string>
+    <string name="location_permission_rationale_title">Location permission</string>
+    <string name="location_not_found">Location not found, select the location on map</string>
 </resources>
