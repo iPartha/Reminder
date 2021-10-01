@@ -34,7 +34,7 @@ class NetworkModule {
                 val original: Request = chain.request()
                 val originalHttpUrl: HttpUrl = original.url
                 val url: HttpUrl = originalHttpUrl.newBuilder()
-                    .addQueryParameter("key", "AIzaSyDF3MCSaphsNSK01MF0-nBxFCveFHeDrLo")
+                    .addQueryParameter("key", BuildConfig.MAPS_API_KEY)
                     .build()
 
                 // Request customization: add request headers

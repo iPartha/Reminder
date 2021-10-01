@@ -14,7 +14,7 @@ buildscript {
                 'id'        : 'com.know.reminder'
         ]
         versions = [
-                'gradle'               : '4.0.1',
+                'gradle'               : '7.0.0',
                 'appcompat'            : '1.2.0',
                 'recyclerview'         : '1.1.0',
                 'cardview'             : '1.0.0',
@@ -78,6 +78,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:${versions.gradle}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+        classpath "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.0"
     }
 }
 
