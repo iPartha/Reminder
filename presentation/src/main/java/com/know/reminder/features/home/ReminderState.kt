@@ -9,7 +9,9 @@ import com.know.reminder.common.ViewState
 sealed class ReminderState : ViewState{
     object Loading : ReminderState()
     object Nothing : ReminderState()
+    object ReminderSet : ReminderState()
     data class ResultLocation(val location : GeoLocation): ReminderState()
     data class ResultDirection(val direction : LocationDirection): ReminderState()
+    data class ResultDuration(val duration: Long): ReminderState()
     data class Exception(val callErrors: CallErrors) : ReminderState()
 }

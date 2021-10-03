@@ -30,6 +30,7 @@ buildscript {
                 'location'             : '18.0.0',
                 'interceptor'           : '4.2.1',
 
+
         ]
         deps = [
                 'androidx' : [

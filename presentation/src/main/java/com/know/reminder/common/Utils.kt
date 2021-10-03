@@ -45,3 +45,5 @@ fun Activity.showAlert(context: Context, title : String, msg: String, success: (
         create().show()
     }
 }
+
+fun Long.toMilliSeconds() = this*60*1000L

@@ -24,7 +24,6 @@ abstract class BaseActivity<INTENT : ViewIntent, ACTION : ViewAction, STATE : Vi
             viewState = it
             render(it)
         })
-        initDATA()
         initEVENT()
     }
 
@@ -32,7 +31,6 @@ abstract class BaseActivity<INTENT : ViewIntent, ACTION : ViewAction, STATE : Vi
     @LayoutRes
     abstract fun getLayoutResId(): Int
     abstract fun initUI()
-    abstract fun initDATA()
     abstract fun initEVENT()
     fun dispatchIntent(intent: INTENT) {
         viewModel.dispatchIntent(intent)

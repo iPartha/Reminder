@@ -21,17 +21,14 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.know.reminder.R
 import com.know.reminder.common.BaseActivity
-import com.know.reminder.common.showAlert
-import com.know.reminder.features.home.ReminderAction
-import com.know.reminder.features.home.ReminderIntent
-import com.know.reminder.features.home.ReminderState
-import com.know.reminder.features.home.ReminderViewModel
 import java.util.*
 import com.google.android.gms.maps.model.PolylineOptions
 import com.know.domain.LocationDirection
+import com.know.reminder.common.showAlert
+import com.know.reminder.features.home.*
 
 
-class MapsActivity : BaseActivity<ReminderIntent, ReminderAction, ReminderState, ReminderViewModel>(
+class ReminderActivity : BaseActivity<ReminderIntent, ReminderAction, ReminderState, ReminderViewModel>(
     ReminderViewModel::class.java), OnMapReadyCallback {
 
     companion object {
@@ -185,10 +182,6 @@ class MapsActivity : BaseActivity<ReminderIntent, ReminderAction, ReminderState,
         searchView = findViewById(R.id.searchView)
     }
 
-    override fun initDATA() {
-
-    }
-
     override fun initEVENT() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -208,17 +201,19 @@ class MapsActivity : BaseActivity<ReminderIntent, ReminderAction, ReminderState,
     override fun render(state: ReminderState) {
         when (state) {
             is ReminderState.ResultLocation -> {
-                println(state.location)
                 state.location.results?.get(0)?.geometry?.run {
                     selectMap(mMap.cameraPosition.target, LatLng(location.lat, location.lng))
                 }
             }
             is ReminderState.ResultDirection -> {
-                println(state)
                 drawDirections(state.direction)
+                dispatchIntent(ReminderIntent.SetReminder(state.direction, 5*60))
             }
             is ReminderState.Exception -> {
                 Log.e(TAG, "Exception :${state.callErrors}")
+            }
+            else -> {
+                Log.e(TAG, "Unhandled state :${state}")
             }
         }
     }

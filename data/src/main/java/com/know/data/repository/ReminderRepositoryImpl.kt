@@ -8,6 +8,7 @@ import com.know.data.common.asString
 import com.know.data.services.ApiService
 import com.know.domain.LocationDirection
 import com.know.domain.LocationLatLng
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import java.net.URLEncoder
@@ -43,12 +44,21 @@ class ReminderRepositoryImpl(private val api: ApiService) : ReminderRepository {
         emit(Result.Error(CallErrors.ErrorException(it)))
     }
 
+    override fun getDuration(origin: LatLng, dest: LatLng)= flow {
+        api.getDirection(origin.asString(), dest.asString()).run {
+            val json = JSONObject(this.string())
+            emit(Result.Success(parseDuration(json)))
+
+        }
+    }
+
     private fun parseDirections(jsonObject: JSONObject) : LocationDirection {
         val routes: MutableList<List<LocationLatLng>> = ArrayList()
         val jRoutes: JSONArray?
         var jLegs: JSONArray?
         var jSteps: JSONArray?
-        var totalTime = 0;
+        var totalTime = 0L
+        var endLocation: LocationLatLng?= null
 
         try {
             jRoutes = jsonObject.getJSONArray("routes")
@@ -77,6 +87,16 @@ class ReminderRepositoryImpl(private val api: ApiService) : ReminderRepository {
                             totalTime += this
                         }
                     }
+                    if (endLocation == null) {
+                        (jLegs[j] as JSONObject).getJSONObject("end_location").run {
+                            getDouble("lat").let { lat->
+                                getDouble("lng").let { lng->
+                                    endLocation = LocationLatLng(lat, lng)
+                                }
+                            }
+                        }
+                    }
+
                 }
             }
         } catch (e: JSONException) {
@@ -84,7 +104,7 @@ class ReminderRepositoryImpl(private val api: ApiService) : ReminderRepository {
         } catch (e: Exception) {
         }
 
-        return LocationDirection(routes, totalTime)
+        return LocationDirection(routes, endLocation, totalTime)
     }
     private fun decodePoly(encoded: String): List<*> {
         val poly = ArrayList<LatLng>()
@@ -119,6 +139,33 @@ class ReminderRepositoryImpl(private val api: ApiService) : ReminderRepository {
             poly.add(p)
         }
         return poly
+    }
+    private fun parseDuration(jsonObject: JSONObject) : Long {
+        val jRoutes: JSONArray?
+        var jLegs: JSONArray?
+        var totalTime = 0L
+
+        try {
+            jRoutes = jsonObject.getJSONArray("routes")
+            /** Traversing all routes  */
+            for (i in 0 until jRoutes.length()) {
+                jLegs = (jRoutes[i] as JSONObject).getJSONArray("legs")
+                val path = ArrayList<LocationLatLng>()
+                /** Traversing all legs  */
+                for (j in 0 until jLegs.length()) {
+                    (jLegs[j] as JSONObject).getJSONObject("duration").run {
+                        getInt("value").run {
+                            totalTime += this
+                        }
+                    }
+                }
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        } catch (e: Exception) {
+        }
+
+        return totalTime
     }
 
 }

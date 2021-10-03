@@ -7,21 +7,23 @@ import com.know.domain.LocationDirection
 import com.know.reminder.common.ViewAction
 
 
-fun Result<Any>.reduce(viewAction: ViewAction): ReminderState {
+fun Result<Any>.reduce(): ReminderState {
     return when (this) {
-        is Result.Success -> {
-            when (viewAction) {
-                is ReminderAction.SearchLocation -> {
+        is Result.Success ->
+            when (data) {
+                is GeoLocation -> {
                     ReminderState.ResultLocation(data as GeoLocation)
                 }
-                is ReminderAction.GetDirection -> {
+                is LocationDirection -> {
                     ReminderState.ResultDirection(data as LocationDirection)
+                }
+                is Long -> {
+                    ReminderState.ResultDuration(data as Long)
                 }
                 else -> {
                     ReminderState.Nothing
                 }
             }
-        }
         is Result.Error -> ReminderState.Exception(exception)
         is Result.Loading -> ReminderState.Loading
     }

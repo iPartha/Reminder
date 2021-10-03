@@ -1,5 +1,7 @@
 package com.know.domain
 
+import java.io.Serializable
+
 data class GeoLocation(val results : List<Result>?, val status : String)
 
 data class Result(
@@ -21,7 +23,7 @@ data class Geometry(
 
 data class Direction(val northeast:LocationLatLng, val southwest:LocationLatLng)
 
-data class LocationLatLng(val lat:Double, val lng:Double) {
+data class LocationLatLng(val lat:Double, val lng:Double) : Serializable {
     override fun toString(): String {
         return "$lat,$lng"
     }

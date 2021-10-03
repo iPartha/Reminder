@@ -2,6 +2,8 @@ package com.know.reminder.common
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.know.data.repository.ReminderRepository
+import com.know.data.services.ApiService
 import com.know.reminder.ReminderApplication
 import com.know.reminder.di.common.AppRouter
 import com.know.reminder.di.component.ActivityComponent
@@ -17,6 +19,12 @@ open class RootBaseActivity : AppCompatActivity() {
         DaggerActivityComponent.builder().activityModule(ActivityModule(this))
             .applicationComponent(ReminderApplication.appComponents).build()
     }
+
+    @Inject
+    lateinit var service : ApiService
+
+    @Inject
+    lateinit var repository: ReminderRepository
 
     @Inject
     lateinit var appRouter: AppRouter
