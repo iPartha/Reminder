@@ -1,11 +1,14 @@
 package com.know.reminder.features.home.ui
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Geocoder
 import android.os.Build
 import android.util.Log
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -29,7 +32,7 @@ import com.know.reminder.features.home.*
 
 
 class ReminderActivity : BaseActivity<ReminderIntent, ReminderAction, ReminderState, ReminderViewModel>(
-    ReminderViewModel::class.java), OnMapReadyCallback {
+    ReminderViewModel::class.java), OnMapReadyCallback, TimerDialogFragment.TimerClickListener {
 
     companion object {
         private const val REQUEST_LOCATION_PERMISSION = 1001
@@ -40,6 +43,7 @@ class ReminderActivity : BaseActivity<ReminderIntent, ReminderAction, ReminderSt
 
     private lateinit var mMap: GoogleMap
     private val markerPoints = arrayListOf<LatLng>()
+    private var reminderTimeInSecs : Long = 0
 
     private val fusedLocationClient : FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(this)
@@ -180,12 +184,14 @@ class ReminderActivity : BaseActivity<ReminderIntent, ReminderAction, ReminderSt
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         searchView = findViewById(R.id.searchView)
+        showTimer()
     }
 
     override fun initEVENT() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.run {
+                    hideKeyBoard()
                     dispatchIntent(ReminderIntent.SearchLocation(this))
                 }
                 return true
@@ -207,7 +213,7 @@ class ReminderActivity : BaseActivity<ReminderIntent, ReminderAction, ReminderSt
             }
             is ReminderState.ResultDirection -> {
                 drawDirections(state.direction)
-                dispatchIntent(ReminderIntent.SetReminder(state.direction, 5*60))
+                dispatchIntent(ReminderIntent.SetReminder(state.direction, reminderTimeInSecs))
             }
             is ReminderState.Exception -> {
                 Log.e(TAG, "Exception :${state.callErrors}")
@@ -291,6 +297,25 @@ class ReminderActivity : BaseActivity<ReminderIntent, ReminderAction, ReminderSt
 
         if (points.size != 0) {
             mMap.addPolyline(lineOptions)
+        }
+    }
+
+    private fun showTimer() {
+        TimerDialogFragment().apply {
+            isCancelable = false
+            show(supportFragmentManager, TimerDialogFragment.TAG)
+        }
+    }
+
+    override fun onTimerChange(timerInSecs: Long) {
+        reminderTimeInSecs = timerInSecs
+    }
+
+    private fun hideKeyBoard() {
+        currentFocus?.let { view->
+            val imm: InputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 }
