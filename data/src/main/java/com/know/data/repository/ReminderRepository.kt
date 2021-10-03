@@ -9,4 +9,5 @@ import kotlinx.coroutines.flow.Flow
 interface ReminderRepository {
     fun getLocationByAddress(address:String) : Flow<Result<GeoLocation>>
     fun getDirection(origin: LatLng, dest: LatLng) :  Flow<Result<LocationDirection>>
+    fun getDuration(origin: LatLng, dest: LatLng) :  Flow<Result<Long>>
 }
