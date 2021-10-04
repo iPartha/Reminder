@@ -9,6 +9,8 @@ import android.os.Build
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import android.widget.ProgressBar
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -29,6 +31,7 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.know.domain.LocationDirection
 import com.know.reminder.common.showAlert
 import com.know.reminder.features.home.*
+import kotlinx.android.synthetic.main.activity_maps.*
 
 
 class ReminderActivity : BaseActivity<ReminderIntent, ReminderAction, ReminderState, ReminderViewModel>(
@@ -50,6 +53,8 @@ class ReminderActivity : BaseActivity<ReminderIntent, ReminderAction, ReminderSt
     }
 
     private lateinit var searchView : SearchView
+    private lateinit var progressbar : ProgressBar
+    private lateinit var cancelReminder : Button
 
      /**
      * Manipulates the map once available.
@@ -184,6 +189,8 @@ class ReminderActivity : BaseActivity<ReminderIntent, ReminderAction, ReminderSt
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         searchView = findViewById(R.id.searchView)
+        progressbar = findViewById(R.id.progressbar)
+        cancelReminder = findViewById(R.id.cancel_button)
         showTimer()
     }
 
@@ -202,9 +209,12 @@ class ReminderActivity : BaseActivity<ReminderIntent, ReminderAction, ReminderSt
             }
 
         })
+
+        cancelReminder.setOnClickListener(stopReminder)
     }
 
     override fun render(state: ReminderState) {
+        progressbar.visibility = View.GONE
         when (state) {
             is ReminderState.ResultLocation -> {
                 state.location.results?.get(0)?.geometry?.run {
@@ -214,6 +224,13 @@ class ReminderActivity : BaseActivity<ReminderIntent, ReminderAction, ReminderSt
             is ReminderState.ResultDirection -> {
                 drawDirections(state.direction)
                 dispatchIntent(ReminderIntent.SetReminder(state.direction, reminderTimeInSecs))
+            }
+            is ReminderState.Loading ->{
+                progressbar.visibility = View.VISIBLE
+            }
+            is ReminderState.ReminderSet -> {
+                searchView.visibility = View.GONE
+                cancelReminder.visibility = View.VISIBLE
             }
             is ReminderState.Exception -> {
                 Log.e(TAG, "Exception :${state.callErrors}")
@@ -246,8 +263,8 @@ class ReminderActivity : BaseActivity<ReminderIntent, ReminderAction, ReminderSt
 
     private fun selectMap(origin: LatLng, dest: LatLng) {
 
-        markerPoints.clear();
-        mMap.clear();
+        markerPoints.clear()
+        mMap.clear()
 
 
         // Adding new item to the ArrayList
@@ -318,6 +335,16 @@ class ReminderActivity : BaseActivity<ReminderIntent, ReminderAction, ReminderSt
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
+
+    private val stopReminder = View.OnClickListener {
+        ReminderService.cancelAlarm(applicationContext)
+        searchView.visibility = View.VISIBLE
+        cancelReminder.visibility = View.GONE
+        markerPoints.clear()
+        mMap.clear()
+        getLastLocation()
+    }
+
 }
 
 

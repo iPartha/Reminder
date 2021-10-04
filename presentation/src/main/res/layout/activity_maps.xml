@@ -24,4 +24,26 @@
         app:iconifiedByDefault="false"
         app:queryHint="Destination" />
 
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_height="75dp"
+        android:layout_width="75dp"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        />
+
+    <Button
+        android:id="@+id/cancel_button"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="6dp"
+        android:text="Cancel Reminder"
+        android:textSize="18sp"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        />
+
 </RelativeLayout>

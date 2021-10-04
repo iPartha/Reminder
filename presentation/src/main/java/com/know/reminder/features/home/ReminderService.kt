@@ -76,7 +76,9 @@ class ReminderService : RootBaseService() {
             val sender = PendingIntent.getBroadcast(context, 0, intent, 0)
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(sender)
+            context.stopService(Intent(context.applicationContext, ReminderService::class.java))
         }
+
 
         fun getLocationUpdateTime(travelTimeInSecs : Long) : Long {
             return when {
