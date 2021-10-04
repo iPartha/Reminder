@@ -69,6 +69,9 @@ class ReminderService : RootBaseService() {
             intent.action = "ReminderService"
             val pi = PendingIntent.getService(context.applicationContext, 1001, intent, PendingIntent.FLAG_UPDATE_CURRENT)
             am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, (System.currentTimeMillis()+locationUpdateTime), pi)
+
+            val serviceIntent = Intent(context.applicationContext, ReminderService::class.java)
+            context.startService(serviceIntent)
         }
 
         fun cancelAlarm(context: Context) {
@@ -169,15 +172,12 @@ class ReminderService : RootBaseService() {
             }
         }
 
-        if (this::destinationLocation.isInitialized) {
+        startForeground(LOCATION_SERVICE_NOTIFICATION_ID,
+            createForegroundInfo(applicationContext.getString(R.string.location_update)))
 
-            startForeground(LOCATION_SERVICE_NOTIFICATION_ID,
-                createForegroundInfo(applicationContext.getString(R.string.location_update)))
+        if (this::destinationLocation.isInitialized) {
             startLocationUpdates()
 
-        } else {
-            Log.e(TAG, "Destination location not found")
-            stopSelf()
         }
 
         return START_STICKY
